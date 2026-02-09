@@ -1,0 +1,7 @@
+{
+  "name": "Micheal Brain Photography Portfolio",
+  "description": "A premium, minimalist photography portfolio for Micheal Brain, featuring categorized galleries, service showcases, and an AI-powered inquiry assistant.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
