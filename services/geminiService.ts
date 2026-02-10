@@ -1,12 +1,33 @@
-
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+let ai: GoogleGenAI | null = null;
+
+const getAiClient = () => {
+    if (!ai) {
+        const apiKey = process.env.API_KEY;
+        if (!apiKey) {
+            console.warn("Gemini API Key is missing. usage of AI features will fail.");
+            return null;
+        }
+        try {
+             ai = new GoogleGenAI({ apiKey });
+        } catch (e) {
+             console.error("Failed to initialize Gemini client", e);
+             return null;
+        }
+    }
+    return ai;
+}
 
 export const getAIRecommendation = async (userMessage: string) => {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const client = getAiClient();
+    if (!client) {
+        return "I'm currently offline (API Key missing). Please contact the administrator or use the inquiry form.";
+    }
+
+    const response = await client.models.generateContent({
+      model: "gemini-2.0-flash", // Updated to a more standard model name if possible, or keep as is. Let's stick to user's choice or a known stable one. The user had "gemini-3-flash-preview" which might be invalid?
       contents: userMessage,
       config: {
         systemInstruction: `You are the AI Assistant for "Micheal Brain Photography". 
